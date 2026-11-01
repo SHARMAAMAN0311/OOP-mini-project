@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact - FreshGuard AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="animations.css" />
+<script src="main.js" defer></script>
+</head>
+<body class="page page-transition">
+<div id="toast" class="toast"></div>
+
+<header class="site-header">
+  <div class="container navbar">
+    <a class="brand" href="index.html"><div class="mark">FG</div><span>FreshGuard AI</span></a>
+    <div class="nav-actions">
+      <a href="index.html" class="btn btn-ghost">Home</a>
+    </div>
+  </div>
+</header>
+
+<section class="page" style="padding:40px 0 90px">
+  <div class="container">
+    <div class="form-card" style="max-width:620px;margin:0 auto">
+      <h1 style="font-size:1.7rem;margin-bottom:10px">Contact Us</h1>
+      <p style="color:var(--text-muted);margin-bottom:26px">Have a question or feedback? We'd love to hear from you.</p>
+      <form id="contactForm" novalidate>
+        <div id="contact-error" class="field-error" style="display:none"></div>
+        <div id="contact-success" style="color:var(--primary);font-weight:600;margin-bottom:14px;display:none"></div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="name" placeholder="Alex Rivera" required />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="you@example.com" required />
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" name="subject" placeholder="Feedback / Question" required />
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" rows="5" placeholder="How can we help?" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("contactForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const err = document.getElementById("contact-error");
+  const success = document.getElementById("contact-success");
+  err.style.display="none"; success.style.display="none";
+  const res = await api("/api/contact", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({name:fd.get("name"), email:fd.get("email"), subject:fd.get("subject"), message:fd.get("message")})
+  });
+  if(res.ok){ success.textContent = "Message sent successfully!"; success.style.display="block"; e.target.reset(); }
+  else { err.textContent = res.data.error||"Failed to send"; err.style.display="block"; }
+});
+</script>
+</body>
+</html>

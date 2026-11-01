@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login - FreshGuard AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="animations.css" />
+<script src="main.js" defer></script>
+<script src="auth.js" defer></script>
+</head>
+<body class="page page-transition">
+<div id="toast" class="toast"></div>
+
+<header class="site-header">
+  <div class="container navbar">
+    <a class="brand" href="index.html"><div class="mark">FG</div><span>FreshGuard AI</span></a>
+    <div class="nav-actions">
+      <a href="index.html" class="btn btn-ghost guest-only">Back Home</a>
+    </div>
+  </div>
+</header>
+
+<section class="page" style="min-height:calc(100vh - 72px);display:flex;align-items:center;justify-content:center;padding:24px">
+  <div class="form-card page-transition">
+    <div class="form-header">
+      <div class="brand" style="justify-content:center"><div class="mark">FG</div><span style="font-size:1.4rem">FreshGuard AI</span></div>
+      <h1>Welcome back</h1>
+      <p>Inspect your produce quality. Sign in to your account.</p>
+    </div>
+    <form id="loginForm" novalidate>
+      <div id="login-error" class="field-error" style="display:none"></div>
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+      </div>
+      <div class="form-group" style="position:relative">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="&#8222;&#8222;&#8222;&#8222;&#8222;&#8222;" required autocomplete="current-password" />
+        <button type="button" class="toggle-password" onclick="togglePassword('password')" aria-toggle="Show password">&#128065;</button>
+      </div>
+      <label class="remember"><input type="checkbox" name="remember" /> Remember me</label>
+      <div class="link-row">
+        <a href="signup.html">Create an account</a>
+        <a href="about.html">About</a>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" data-label="Sign in">Sign in</button>
+    </form>
+  </div>
+</section>
+</body>
+</html>

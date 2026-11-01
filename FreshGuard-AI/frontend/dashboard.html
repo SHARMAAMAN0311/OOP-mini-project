@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard - FreshGuard AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="animations.css" />
+<script src="main.js" defer></script>
+<script src="dashboard.js" defer></script>
+</head>
+<body class="page page-transition">
+<div id="toast" class="toast"></div>
+
+<header class="site-header">
+  <div class="container navbar">
+    <a class="brand" href="index.html"><div class="mark">FG</div><span>FreshGuard AI</span></a>
+    <div class="nav-actions">
+      <a href="index.html" class="btn btn-ghost">Home</a>
+      <span class="user-name" style="color:var(--primary);font-weight:700;margin-right:12px"></span>
+      <button id="logout-btn" class="btn btn-primary">Logout</button>
+    </div>
+  </div>
+</header>
+
+<div class="container" style="padding-top:10px">
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <div class="brand" style="font-size:1.25rem;margin-bottom:26px"><div class="mark">FG</div><span>FreshGuard AI</span></div>
+      <nav style="display:flex;flex-direction:column;gap:8px">
+        <a href="dashboard.html" class="sidebar-link active">Dashboard</a>
+        <a href="upload.html" class="sidebar-link">Upload Produce</a>
+        <a href="history.html" class="sidebar-link">Inspection History</a>
+        <a href="profile.html" class="sidebar-link">Profile</a>
+        <a href="about.html" class="sidebar-link">About</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-content">
+      <div class="dashboard-header fade-in">
+        <h1>Dashboard</h1>
+        <p>Your inspection overview. Statistics come from your own records in the database.</p>
+      </div>
+
+      <div class="grid-3 fade-in delay-1">
+        <div class="stat-card stat-card">
+          <div class="tag good">Total Inspections</div>
+          <div class="big" id="stat-total">0</div>
+        </div>
+        <div class="stat-card stat-card">
+          <div class="tag good">Good Quality</div>
+          <div class="big" id="stat-good" style="color:var(--primary)">0</div>
+        </div>
+        <div class="stat-card stat-card">
+          <div class="tag poor">Poor Quality</div>
+          <div class="big" id="stat-poor" style="color:var(--error)">0</div>
+        </div>
+        <div class="stat-card stat-card">
+          <div class="tag warn">Needs Inspection</div>
+          <div class="big" id="stat-needs" style="color:var(--warning)">0</div>
+        </div>
+      </div>
+
+      <div class="grid-3 fade-in delay-2" style="gap:20px">
+        <div class="card" style="grid-column:span 2">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <h3 style="font-size:1.1rem">Quality Distribution</h3>
+            <a href="history.html" class="btn btn-outline">View History</a>
+          </div>
+          <div class="chart-card">Chart: quality distribution <br><small>(rendered from live data)</small></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:1.1rem;margin-bottom:14px">Produce Categories</h3>
+          <div class="chart-card">Chart: produce categories <br><small>(from your inspections)</small></div>
+        </div>
+      </div>
+
+      <div class="fade-in delay-2" style="margin-top:24px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <h3 style="font-size:1.1rem">Recent Inspections</h3>
+          <a href="history.html" class="btn btn-outline">All Records</a>
+        </div>
+        <div class="table-wrap" id="recent-table-wrap">
+          <table>
+            <thead><tr><th>Product</th><th>Category</th><th>Quality</th><th>Date</th></tr></thead>
+            <tbody id="recent-rows"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="recent-empty" style="display:none">No inspections yet. Upload your first produce image.</div>
+      </div>
+
+      <div class="fade-in delay-2" style="margin-top:30px;text-align:center">
+        <a href="upload.html" class="btn btn-primary" style="padding:14px 32px;font-size:1rem">+ Quick Upload New Image</a>
+      </div>
+    </main>
+  </div>
+</div>
+
+<style>
+.dashboard-shell { display:flex; gap:26px; align-items:flex-start; }
+.sidebar { width:250px; flex-shrink:0; }
+.dashboard-content { flex:1; }
+.sidebar-link { padding:10px 14px; border-radius:10px; color:var(--text-muted); font-size:0.95rem; display:block; transition:all 0.25s }
+.sidebar-link:hover { background:var(--card-hover); color:var(--text) }
+.sidebar-link.active { background:rgba(66,230,149,0.15); color:var(--primary) }
+.dashboard-header { margin-bottom:26px }
+@media (max-width:900px) {
+  .dashboard-shell { flex-direction:column }
+  .sidebar { width:100%; border-bottom:1px solid var(--border); padding-bottom:20px }
+  .sidebar nav { flex-direction:row; overflow-x:auto; gap:12px; padding-bottom:10px }
+}
+</style>
+</body>
+</html>

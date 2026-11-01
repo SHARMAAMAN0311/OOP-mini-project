@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Inspection History - FreshGuard AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="animations.css" />
+<script src="main.js" defer></script>
+<script src="history.js" defer></script>
+</head>
+<body class="page page-transition">
+<div id="toast" class="toast"></div>
+
+<header class="site-header">
+  <div class="container navbar">
+    <a class="brand" href="index.html"><div class="mark">FG</div><span>FreshGuard AI</span></a>
+    <div class="nav-actions">
+      <a href="dashboard.html" class="btn btn-ghost">Dashboard</a>
+      <a href="upload.html" class="btn btn-primary">Upload Produce</a>
+      <button id="logout-btn" class="btn btn-primary">Logout</button>
+    </div>
+  </div>
+</header>
+
+<section class="page" style="padding:30px 0 80px">
+  <div class="container">
+    <h1 style="font-size:1.7rem;margin-bottom:10px">Inspection History</h1>
+    <p style="color:var(--text-muted);margin-bottom:22px">Your records only. Search, filter, and export your inspections.</p>
+
+    <div class="filter-bar fade-in">
+      <input type="text" id="searchInput" placeholder="Search product&#8230;" />
+      <select id="catFilter"><option value="">All Categories</option></select>
+      <input type="date" id="dateFilter" />
+      <button class="btn btn-outline" id="exportBtn">Export CSV</button>
+    </div>
+
+    <div class="table-wrap fade-in delay-1">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Date</th><th>Product</th><th>Category</th><th>Quality</th><th>Mode</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="historyRows"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="historyEmpty" style="display:none">No inspections found.</div>
+  </div>
+</section>
+
+<style>
+.actions-cell { display:flex; gap:8px; flex-wrap:wrap; }
+.modal-overlay .modal table { width:100%; }
+</style>
+
+<!-- Delete confirmation modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <button class="close" onclick="closeDeleteModal()">&times;</button>
+    <h3 style="margin-bottom:12px">Delete Inspection?</h3>
+    <p style="color:var(--text-muted);margin-bottom:18px">This cannot be undone.</p>
+    <div class="btn-group" style="justify-content:flex-end;gap:10px">
+      <button class="btn btn-ghost" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" id="confirmDelete">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const user = getAuthUser();
+  if (!user) {
+    location.href = "login.html";
+    return;
+  }
+
+  let deleteTarget = null;
+  function openDeleteModal(id){ deleteTarget=id; document.getElementById("deleteModal").classList.add("open"); }
+  function closeDeleteModal(){ deleteTarget=null; document.getElementById("deleteModal").classList.remove("open"); }
+  document.getElementById("confirmDelete").addEventListener("click", async ()=>{
+    if(deleteTarget===null) return;
+    const res = await api("/api/inspections/"+deleteTarget, { method:"DELETE" });
+    closeDeleteModal();
+    if(res.ok){ toast("Inspection deleted"); loadHistory(); }
+    else toast(res.data.error || "Delete failed","error");
+  });
+});
+</script>
+</body>
+</html>

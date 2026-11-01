@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create Account - FreshGuard AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="animations.css" />
+<script src="main.js" defer></script>
+<script src="auth.js" defer></script>
+</head>
+<body class="page page-transition">
+<div id="toast" class="toast"></div>
+
+<header class="site-header">
+  <div class="container navbar">
+    <a class="brand" href="index.html"><div class="mark">FG</div><span>FreshGuard AI</span></a>
+    <div class="nav-actions">
+      <a href="index.html" class="btn btn-ghost guest-only">Back Home</a>
+    </div>
+  </div>
+</header>
+
+<section class="page" style="min-height:calc(100vh - 72px);display:flex;align-items:center;justify-content:center;padding:24px">
+  <div class="form-card page-transition" style="max-width:520px">
+    <div class="form-header">
+      <div class="brand" style="justify-content:center"><div class="mark">FG</div><span style="font-size:1.4rem">FreshGuard AI</span></div>
+      <h1>Create an account</h1>
+      <p>Join FreshGuard AI to save your inspection history.</p>
+    </div>
+    <form id="signupForm" novalidate>
+      <div id="signup-error" class="field-error" style="display:none"></div>
+      <div class="form-group">
+        <label for="full_name">Full name</label>
+        <input type="text" id="full_name" name="full_name" placeholder="Alex Rivera" required autocomplete="name" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+      </div>
+      <div class="form-group" style="position:relative">
+        <label for="password">Password</label>
+        <input type="password" id="signup-password" name="password" placeholder="&#8222;&#8222;&#8222;&#8222;&#8222;&#8222;" required autocomplete="new-password" />
+        <button type="button" class="toggle-password" onclick="togglePassword('signup-password')" aria-toggle="Show password">&#128065;</button>
+        <span id="password-strength" class="field-hint" style="display:block"></span>
+      </div>
+      <div class="form-group" style="position:relative">
+        <label for="confirm_password">Confirm password</label>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="&#8222;&#8222;&#8222;&#8222;&#8222;&#8222;" required autocomplete="new-password" />
+        <button type="button" class="toggle-password" onclick="togglePassword('confirm_password')" aria-toggle="Show password">&#128065;</button>
+      </div>
+      <div class="link-row">
+        <a href="login.html">Already have an account? Sign in</a>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" data-label="Create account">Create account</button>
+    </form>
+  </div>
+</section>
+</body>
+</html>

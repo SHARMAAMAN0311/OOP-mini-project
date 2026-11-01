@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Upload Produce - FreshGuard AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="animations.css" />
+<script src="main.js" defer></script>
+<script src="upload.js" defer></script>
+</head>
+<body class="page page-transition">
+<div id="toast" class="toast"></div>
+
+<header class="site-header">
+  <div class="container navbar">
+    <a class="brand" href="index.html"><div class="mark">FG</div><span>FreshGuard AI</span></a>
+    <div class="nav-actions">
+      <a href="dashboard.html" class="btn btn-ghost">Dashboard</a>
+      <button id="logout-btn" class="btn btn-primary">Logout</button>
+    </div>
+  </div>
+</header>
+
+<section class="page" style="padding:40px 0 80px">
+  <div class="container">
+    <div class="form-card" style="max-width:760px;margin:0 auto">
+      <div style="margin-bottom:26px">
+        <h1 style="font-size:1.7rem;margin-bottom:6px">Upload Produce Image</h1>
+        <p style="color:var(--text-muted);font-size:0.95rem">JPG, JPEG, PNG, WEBP &#8226; Max 8 MB</p>
+      </div>
+      <form id="uploadForm" novalidate>
+        <div id="upload-error" class="field-error" style="display:none"></div>
+
+        <div class="form-group">
+          <label>Produce Image</label>
+          <div class="drop-zone" id="dropZone">
+            <div class="icon">&#128247;</div>
+            <p>Drag &amp; drop your produce image here</p>
+            <p class="field-hint" style="margin-top:6px">or click to browse</p>
+            <input type="file" id="fileInput" name="image" accept=".jpg,.jpeg,.png,.webp" required />
+          </div>
+          <div class="image-preview" id="preview">
+            <div class="scan-border" style="display:inline-block">
+              <img id="previewImg" alt="Preview" />
+            </div>
+            <div style="margin-top:12px">
+              <button type="button" class="btn-remove" id="btnRemove">Remove</button>
+              <button type="button" class="btn-replace" id="btnReplace">Replace</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" name="product_name" placeholder="e.g. Green Apple" required />
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <div class="category-grid" id="categoryGrid">
+            <label class="category-option selected">
+              <img src="https://cdn-icons-png.flaticon.com/512/716/716694.png" alt="Apple" />
+              <input type="radio" name="category" value="Fruit" checked />
+              <div>Fruit</div>
+            </label>
+            <label class="category-option">
+              <img src="https://cdn-icons-png.flaticon.com/512/716/716694.png" alt="Vegetable" />
+              <input type="radio" name="category" value="Vegetable" />
+              <div>Vegetable</div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Batch Number (optional)</label>
+          <input type="text" name="batch_number" placeholder="e.g. BATCH-001" />
+        </div>
+        <div class="form-group">
+          <label>Inspection Location (optional)</label>
+          <input type="text" name="inspection_location" placeholder="e.g. Warehouse A" />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full pulse" id="analyzeBtn" data-label="Analyze Image">Analyze Image</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const user = getAuthUser();
+  if (!user) {
+    location.href = "login.html";
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Inspection Result - FreshGuard AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="animations.css" />
+<script src="main.js" defer></script>
+</head>
+<body class="page page-transition">
+<div id="toast" class="toast"></div>
+
+<header class="site-header">
+  <div class="container navbar">
+    <a class="brand" href="index.html"><div class="mark">FG</div><span>FreshGuard AI</span></a>
+    <div class="nav-actions">
+      <a href="history.html" class="btn btn-ghost">View History</a>
+      <button id="logout-btn" class="btn btn-primary">Logout</button>
+    </div>
+  </div>
+</header>
+
+<section class="page" style="padding:30px 0 80px">
+  <div class="container">
+    <div id="result-loading" class="loading" style="display:none">
+      <div class="loader"></div><div>Analyzing image&#8230;</div>
+    </div>
+
+    <div id="result-content" style="display:none" class="result-panel">
+      <div class="result-hero fade-in">
+        <h2>Inspection Result</h2>
+        <p style="color:var(--text-muted);margin-top:8px">Your produce quality analysis</p>
+      </div>
+
+      <div class="result-card card fade-in delay-1">
+        <div class="result-image-wrap">
+          <img id="resImage" alt="Uploaded produce" />
+          <div id="resBadge" class="badge" style="position:absolute;top:16px;left:16px;z-index:2"></div>
+        </div>
+        <div id="resMode" style="font-size:0.8rem;color:var(--text-muted);margin-bottom:14px"></div>
+        <div id="resLabel" class="result-label fade-in delay-2">&#8226;&#8226;&#8226;</div>
+        <div class="result-meta">
+          <strong>Inspection ID:</strong> <span id="resId">-</span> &nbsp;|&nbsp;
+          <strong>Date:</strong> <span id="resDate">-</span> &nbsp;|&nbsp;
+          <strong>Category:</strong> <span id="resCategory">-</span> &nbsp;|&nbsp;
+          <strong>Product:</strong> <span id="resProduct">-</span>
+        </div>
+
+        <div class="result-section fade-in delay-2">
+          <h3>Visible Characteristics</h3>
+          <div class="features-list" id="resFeatures"></div>
+        </div>
+
+        <div class="result-section fade-in delay-2">
+          <h3>Possible Visible Defects</h3>
+          <div id="resDefects" class="defects">&#8226;&#8226;&#8226;</div>
+        </div>
+
+        <div class="result-section fade-in delay-2">
+          <h3>Quality Summary</h3>
+          <p id="resSummary" style="color:var(--text-muted)"></p>
+          <p style="color:var(--text-muted);font-size:0.85rem;margin-top:10px"><strong>Note:</strong> Basic visual-analysis demonstration only. Not a guarantee of internal freshness or food safety.</p>
+        </div>
+
+        <div class="btn-group fade-in delay-2" style="margin-top:26px">
+          <a href="upload.html" class="btn btn-primary">Analyze Another Image</a>
+          <a href="history.html" class="btn btn-ghost">View History</a>
+        </div>
+
+        <div style="margin-top:14px" class="fade-in delay-2">
+          <a id="resDownload" class="btn btn-outline" style="display:inline-flex;align-items:center;gap:8px">&#128193; Download Report</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="result-error" class="empty-state" style="display:none"></div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const user = getAuthUser();
+  if (!user) {
+    location.href = "login.html";
+    return;
+  }
+
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id");
+  const mode = params.get("mode") || "Basic Visual Analysis";
+
+  const resModeEl = document.getElementById("resMode");
+  if (resModeEl) resModeEl.textContent = "Analysis mode: " + mode + " • demonstration result";
+
+  async function loadResult(){
+    const loadingEl = document.getElementById("result-loading");
+    const contentEl = document.getElementById("result-content");
+    const errorEl = document.getElementById("result-error");
+
+    if(!id){
+      errorEl.textContent = "No inspection specified.";
+      errorEl.style.display = "block";
+      return;
+    }
+    loadingEl.style.display = "flex";
+    contentEl.style.display = "none";
+    errorEl.style.display = "none";
+
+    const res = await api("/api/inspections/"+id);
+    loadingEl.style.display = "none";
+    if(!res.ok){
+      errorEl.textContent = res.data.error || "Failed to load result";
+      errorEl.style.display = "block";
+      return;
+    }
+    const r = res.data;
+    contentEl.style.display = "block";
+
+    const imgEl = document.getElementById("resImage");
+    imgEl.src = API + "/uploads/" + r.image_path;
+    imgEl.onerror = ()=>{ imgEl.src = "https://via.placeholder.com/760x420?text=Image+not+available"; };
+
+    const status = (r.quality_status||"").toLowerCase();
+    const badge = document.getElementById("resBadge");
+    badge.textContent = r.quality_status;
+    badge.className = "badge " + qualityBadgeClass(r.quality_status);
+    const label = document.getElementById("resLabel");
+    label.textContent = r.quality_status;
+    label.style.color = status==="good"?"var(--primary)":(status==="poor"?"var(--error)":"var(--warning)");
+
+    document.getElementById("resId").textContent = r.id;
+    document.getElementById("resDate").textContent = formatDate(r.created_at);
+    document.getElementById("resCategory").textContent = r.category;
+    document.getElementById("resProduct").textContent = r.product_name;
+
+    const feats = (r.detected_features||"").split(",").filter(Boolean);
+    const featBox = document.getElementById("resFeatures");
+    featBox.innerHTML = feats.length? feats.map(f=>`<span class="feature-chip">&#128161; ${f}</span>`).join(""):`<span class="feature-chip">Basic visual features</span>`;
+
+    const defectsBox = document.getElementById("resDefects");
+    if(status==="good"){ defectsBox.textContent = "No obvious visible defects detected."; defectsBox.className="defects none"; }
+    else if(status==="poor"){ defectsBox.textContent = "Visible signs of poor quality (discoloration, softness, blemishes)."; defectsBox.className="defects"; }
+    else { defectsBox.textContent = "Some visible irregularities; closer inspection recommended."; defectsBox.className="defects"; }
+
+    const summaries = { good:"The produce appears to be in good visible quality.", poor:"The produce shows visible signs of poor quality.", needs_inspection:"The produce should be inspected more closely before use." };
+    document.getElementById("resSummary").textContent = summaries[status] || "Review the visual characteristics above.";
+
+    document.getElementById("resDownload").href = API + "/api/reports/inspection/"+id;
+  }
+  loadResult();
+});
+</script>
+</body>
+</html>
